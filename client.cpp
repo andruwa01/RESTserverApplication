@@ -2,6 +2,6 @@
 
 int main()
 {
-    std::cout << "test REST\n";
+    std::cout << "client app\n";
     return 0;
 }
