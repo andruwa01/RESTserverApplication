@@ -2,6 +2,6 @@
 
 int main()
 {
-    std::cout << "hello world\n";
+    std::cout << "test REST\n";
     return 0;
 }
