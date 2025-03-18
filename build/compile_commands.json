@@ -1,7 +1,0 @@
-[
-{
-  "directory": "/home/user/Documents/taskTracker/build",
-  "command": "/usr/bin/c++   -g -o CMakeFiles/serverApp.dir/main.cpp.o -c /home/user/Documents/taskTracker/main.cpp",
-  "file": "/home/user/Documents/taskTracker/main.cpp"
-}
-]

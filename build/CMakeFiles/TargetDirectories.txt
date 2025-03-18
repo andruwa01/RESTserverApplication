@@ -1,3 +1,0 @@
-/home/user/Documents/taskTracker/build/CMakeFiles/serverApp.dir
-/home/user/Documents/taskTracker/build/CMakeFiles/edit_cache.dir
-/home/user/Documents/taskTracker/build/CMakeFiles/rebuild_cache.dir
