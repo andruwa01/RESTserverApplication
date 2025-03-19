@@ -90,28 +90,32 @@ public:
 
         // Open the acceptor
         acceptor_.open(endpoint.protocol(), ec);
-        if (ec) {
+        if (ec)
+        {
             std::cerr << "Open error: " << ec.message() << std::endl;
             return;
         }
 
         // Allow address reuse
         acceptor_.set_option(net::socket_base::reuse_address(true), ec);
-        if (ec) {
+        if (ec)
+        {
             std::cerr << "Set option error: " << ec.message() << std::endl;
             return;
         }
 
         // Bind to the server address
         acceptor_.bind(endpoint, ec);
-        if (ec) {
+        if (ec)
+        {
             std::cerr << "Bind error: " << ec.message() << std::endl;
             return;
         }
 
         // Start listening for connections
         acceptor_.listen(net::socket_base::max_listen_connections, ec);
-        if (ec) {
+        if (ec)
+        {
             std::cerr << "Listen error: " << ec.message() << std::endl;
             return;
         }
