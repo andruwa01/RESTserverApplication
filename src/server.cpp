@@ -18,8 +18,6 @@ using tcp = net::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
 // this function produces an HTTP response for the given request.
 http::response<http::string_body> handle_request(http::request<http::string_body> const& req)
 {
-    std::cout << "generate response\n";
-
     // response to GET request with "Hello, World!"
     if (req.method() == http::verb::get)
     {
@@ -54,11 +52,10 @@ public:
 private:
     void do_read()
     {
-        std::cout << "get request!\n";
-
         auto self(shared_from_this());
         http::async_read(socket_, buffer_, req_, [this, self](beast::error_code ec, std::size_t)
         {
+            std::cout << "get request\n";
             if (!ec)
             {
                 do_write(handle_request(req_));
@@ -68,6 +65,8 @@ private:
 
     void do_write(http::response<http::string_body> res)
     {
+        std::cout << "send response\n";
+
         auto self(shared_from_this());
         auto sp = std::make_shared<http::response<http::string_body>>(std::move(res));
         http::async_write(socket_, *sp, [this, self, sp](beast::error_code ec, std::size_t)
@@ -128,16 +127,6 @@ public:
     }
 
 private:
-    // void do_accept() {
-    //     acceptor_.async_accept(net::make_strand(ioc_), [this](beast::error_code ec, tcp::socket socket) {
-    //         if (!ec) {
-    //             // std::make_shared<Session>(std::move(socket))->run();
-    //             auto session = std::make_shared<Session>(std::move(socket));
-    //             session->run();
-    //         }
-    //         do_accept();
-    //     });
-    // }
     void do_accept()
     {
         acceptor_.async_accept(net::make_strand(ioc_), [self = weak_from_this()](beast::error_code ec, tcp::socket socket)
@@ -149,6 +138,7 @@ private:
                     auto session = std::make_shared<Session>(std::move(socket));
                     session->run();
                 }
+
                 shared_self->do_accept();
             }
         });
@@ -158,15 +148,13 @@ private:
 int main() {
     try
     {
-        auto const address = net::ip::make_address("0.0.0.0");
+        const auto address = net::ip::make_address("127.0.0.1"); // could be 0.0.0.0
         unsigned short port = 8080;
 
         net::io_context ioc{1};
-
-        // std::make_shared<Listener>(ioc, tcp::endpoint{address, port})->run();
         auto listener = std::make_shared<Listener>(ioc, tcp::endpoint{address, port});
-        listener->run();
 
+        listener->run();
         ioc.run();
     }
     catch (const std::exception& e)
