@@ -18,7 +18,7 @@ using tcp = net::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
 // this function produces an HTTP response for the given request.
 http::response<http::string_body> handle_request(http::request<http::string_body> const& req)
 {
-    // response to GET request with "Hello, World!"
+    // handle get request
     if (req.method() == http::verb::get)
     {
         http::response<http::string_body> res{http::status::ok, req.version()};
