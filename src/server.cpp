@@ -119,6 +119,7 @@ public:
             return;
         }
 
+        std::cout << "started listening new connections\n";
     }
 
     void run()
