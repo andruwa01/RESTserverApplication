@@ -25,6 +25,7 @@ http::response<http::string_body> handle_request(http::request<http::string_body
         // handle GET request
         nlohmann::json json_response = {{"message", "this is a GET request"}}; 
         http::response<http::string_body> res{http::status::ok, req.version()};
+
         res.set(http::field::server, "Beast");
         res.set(http::field::content_type, "application/json");
         res.keep_alive(req.keep_alive());
@@ -38,6 +39,7 @@ http::response<http::string_body> handle_request(http::request<http::string_body
         auto json_request = nlohmann::json::parse(req.body());
         std::string response_message = "Received: " + json_request.dump();
         nlohmann::json json_response = {{"message", response_message}};
+
         http::response<http::string_body> res{http::status::ok, req.version()};
         res.set(http::field::server, "Beast");
         res.set(http::field::content_type, "application/json");
@@ -52,6 +54,7 @@ http::response<http::string_body> handle_request(http::request<http::string_body
         auto json_request = nlohmann::json::parse(req.body());
         std::string response_message = "Updated: " + json_request.dump();
         nlohmann::json json_response = {{"message", response_message}};
+
         http::response<http::string_body> res{http::status::ok, req.version()};
         res.set(http::field::server, "Beast");
         res.set(http::field::content_type, "application/json");
@@ -64,6 +67,7 @@ http::response<http::string_body> handle_request(http::request<http::string_body
     {
         // Handle DELETE request
         nlohmann::json json_response = {{"message", "Resource deleted"}};
+
         http::response<http::string_body> res{http::status::ok, req.version()};
         res.set(http::field::server, "Beast");
         res.set(http::field::content_type, "application/json");
