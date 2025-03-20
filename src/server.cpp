@@ -93,7 +93,15 @@ class Session : public std::enable_shared_from_this<Session>
     http::request<http::string_body> req_;
 
 public:
-    explicit Session(tcp::socket socket) : socket_(std::move(socket)) {}
+    explicit Session(tcp::socket socket) : socket_(std::move(socket))
+    {
+        std::cout << "session started\n";
+    }
+
+    ~Session()
+    {
+        std::cout << "session closed\n";
+    }
 
     void run()
     {
@@ -106,7 +114,8 @@ private:
         auto self(shared_from_this());
         http::async_read(socket_, buffer_, req_, [this, self](beast::error_code ec, std::size_t)
         {
-            std::cout << "get request\n";
+            std::cout << "receive request\n";
+
             if (!ec)
             {
                 do_write(handle_request(req_));
