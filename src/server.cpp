@@ -3,7 +3,7 @@
 int main() {
     try
     {
-        const auto address = net::ip::make_address("127.0.0.1"); // could be 0.0.0.0
+        const auto address = net::ip::make_address("127.0.0.1"); // use 0.0.0.0 for all interfaces on machine
         unsigned short port = 8080;
 
         net::io_context ioc{1};
