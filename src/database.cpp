@@ -1,9 +1,14 @@
 #include "database.hpp"
 
 Database::Database(const std::string& connection_string)
-    : conn_(connection_string) {}
+    : conn_(connection_string)
+{
+    std::cout << "connected to db\n";
+}
 
-Database::~Database() {}
+Database::~Database()
+{
+}
 
 void Database::get_one()
 {
