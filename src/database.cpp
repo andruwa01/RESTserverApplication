@@ -8,6 +8,7 @@ Database::Database(const std::string& connection_string)
 
 Database::~Database()
 {
+    std::cout << "disconnected from db\n";
 }
 
 void Database::get_one()

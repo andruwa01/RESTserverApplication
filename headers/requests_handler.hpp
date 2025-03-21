@@ -3,6 +3,7 @@
 
 #include "boost_namespaces.hpp"
 #include "database.hpp"
+#include "server.hpp"
 #include <nlohmann/json.hpp>
 
 http::response<http::string_body> handle_request(const http::request<http::string_body>& req);

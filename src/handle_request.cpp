@@ -4,8 +4,9 @@ http::response<http::string_body> handle_request(const http::request<http::strin
 {
     if (req.method() == http::verb::get && req.target() == "/api/data")
     {
-        Database db("dbname=tasks_employees user=user password=123 host=localhost port=5432");
-        db.get_one();
+        // Database db("dbname=tasks_employees user=user password=123 host=localhost port=5432");
+        // db.get_one();
+        dbconnection->get_one();
 
         // handle GET request
         nlohmann::json json_response = {{"message", "this is a GET request"}}; 
