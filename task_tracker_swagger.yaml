@@ -336,7 +336,7 @@ paths:
               example:
                 error: "Task not found"
     delete:
-      summary: Удаление задачи
+      summary: Удаление задачи (и всех дочерних задач)
       description: |
         **SQL Query:**
         ```
