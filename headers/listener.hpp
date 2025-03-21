@@ -2,8 +2,8 @@
 #ifndef LISTENER_H_
 #define LISTENER_H_
 
-#include "boost_namespaces.h"
-#include "session.h"
+#include "boost_namespaces.hpp"
+#include "session.hpp"
 #include <memory>
 
 class Listener : public std::enable_shared_from_this<Listener>

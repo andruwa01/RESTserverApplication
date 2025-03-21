@@ -1,9 +1,9 @@
 #ifndef SERVER_H_
 #define SERVER_H_
 
-#include "boost_namespaces.h"
-#include "listener.h"
-#include "session.h"
+#include "boost_namespaces.hpp"
+#include "listener.hpp"
+#include "session.hpp"
 
 #include <iostream>
 // #include <memory>

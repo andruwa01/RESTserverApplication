@@ -1,9 +1,10 @@
 #ifndef SESSTION_H_
 #define SESSTION_H_
 
-#include "boost_namespaces.h"
-#include "handle_request.h"
+#include "boost_namespaces.hpp"
+#include "requests_handler.hpp"
 #include <memory>
+#include <iostream>
 
 class Session : public std::enable_shared_from_this<Session> {
     tcp::socket socket_;
