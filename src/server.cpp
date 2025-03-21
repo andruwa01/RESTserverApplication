@@ -1,21 +1,4 @@
-#include <boost/beast/core.hpp>
-#include <boost/beast/http.hpp>
-// #include <boost/beast/version.hpp>
-// #include <boost/asio/ip/tcp.hpp>
-#include <boost/asio/strand.hpp>
-// #include <boost/config.hpp>
-
-#include <iostream>
-// #include <memory>
-// #include <string>
-// #include <thread>
-
-#include <nlohmann/json.hpp>
-
-namespace beast = boost::beast; // from <boost/beast.hpp>
-namespace http = beast::http;   // from <boost/beast/http.hpp>
-namespace net = boost::asio;    // from <boost/asio.hpp>
-using tcp = net::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
+#include "server.h"
 
 // this function produces an HTTP response for the given request.
 http::response<http::string_body> handle_request(http::request<http::string_body> const& req)
@@ -111,7 +94,7 @@ public:
 private:
     void do_read()
     {
-        auto self(shared_from_this());
+        auto self(shared_from_this()); // guarantee that Session will exist until async_read finish
         http::async_read(socket_, buffer_, req_, [this, self](beast::error_code ec, std::size_t)
         {
             std::cout << "receive request\n";
@@ -127,7 +110,7 @@ private:
     {
         std::cout << "send response\n";
 
-        auto self(shared_from_this());
+        auto self(shared_from_this()); // guarantee that Session will exist until async_write finish
         auto sp = std::make_shared<http::response<http::string_body>>(std::move(res));
         http::async_write(socket_, *sp, [this, self, sp](beast::error_code ec, std::size_t)
         {
@@ -213,9 +196,10 @@ int main() {
         unsigned short port = 8080;
 
         net::io_context ioc{1};
-        auto listener = std::make_shared<Listener>(ioc, tcp::endpoint{address, port});
 
+        auto listener = std::make_shared<Listener>(ioc, tcp::endpoint{address, port});
         listener->run();
+
         ioc.run();
     }
     catch (const std::exception& e)
