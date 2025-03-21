@@ -1,15 +1,11 @@
 #include "requests_handler.hpp"
 
-// #include <boost/beast/http.hpp>
-// #include <nlohmann/json.hpp>
-
-// namespace beast = boost::beast; // from <boost/beast.hpp>
-// namespace http = beast::http;   // from <boost/beast/http.hpp>
-
 http::response<http::string_body> handle_request(const http::request<http::string_body>& req)
 {
     if (req.method() == http::verb::get && req.target() == "/api/data")
     {
+        Database db("jkds;jfd");
+
         // handle GET request
         nlohmann::json json_response = {{"message", "this is a GET request"}}; 
 
