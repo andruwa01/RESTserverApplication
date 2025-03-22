@@ -5,6 +5,7 @@
 #include <pqxx/pqxx>
 #include <string>
 #include <iostream>
+#include <nlohmann/json.hpp>
 
 class Database
 {
@@ -12,8 +13,8 @@ public:
     Database(const std::string& connection_string);
     ~Database();
 
-    void get_one();
-    std::string get_all_employees();
+    void testConnection();
+    pqxx::connection& getConnection();
 
 private:
     pqxx::connection conn_;

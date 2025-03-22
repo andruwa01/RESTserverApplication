@@ -11,7 +11,7 @@ Database::~Database()
     std::cout << "disconnected from db\n";
 }
 
-void Database::get_one()
+void Database::testConnection()
 {
     try
     {
@@ -26,15 +26,7 @@ void Database::get_one()
     }
 }
 
-std::string Database::get_all_employees()
+pqxx::connection& Database::getConnection()
 {
-    pqxx::work txn(conn_);
-    pqxx::result result = txn.exec("SELECT * FROM employees");
-
-    if (result.empty())
-    {
-        return "{}"; // Пустой ответ, если данных нет
-    }
-
-    return result[0][0].as<std::string>();
+    return conn_;
 }
