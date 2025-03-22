@@ -3,9 +3,5 @@
 
 #include "listener.hpp"
 #include "database.hpp"
-#include <memory>
-
-extern std::unique_ptr<Database> dbconnection;
-extern net::io_context ioc;
 
 #endif
