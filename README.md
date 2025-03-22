@@ -1,6 +1,6 @@
 # Preinstalled
 
-- postgresql (`sudo apt install postgresql`)
+- postgresqe (`sudo apt install postgresql-16`) (how to add repositories: https://www.postgresql.org/download/linux/ubuntu/)
 - cmake 3.22.1 (`sudo apt install cmake`)
 - Boost library (c++) (`sudo apt install libboost-all-dev`)
 - nlohmann json library (`sudo apt install nlohmann-json3-dev`)
@@ -18,4 +18,4 @@
     2. `$ psql`.
     2. `ALTER USER postgres WITH PASSWORD 'newpassword'`.
 3. create new role for our database.
-    1. 
+    1.  
