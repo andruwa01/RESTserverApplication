@@ -19,3 +19,5 @@
     2. `ALTER USER postgres WITH PASSWORD 'newpassword'`.
 3. create new role for our database.
     1.  
+4. create database for user as owner.
+5. load dump .sql to db.
