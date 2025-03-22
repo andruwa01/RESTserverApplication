@@ -2,7 +2,7 @@
 
 http::response<http::string_body> handle_request(const http::request<http::string_body>& req)
 {
-    Database de("dbname=tasks_employees user=user password=123 host=localhost port=5432");
+    Database db("dbname=tasks_employees user=user password=123 host=localhost port=5432");
 
     if (req.method() == http::verb::get && req.target() == "/api/data")
     {
