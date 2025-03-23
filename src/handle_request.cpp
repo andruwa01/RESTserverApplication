@@ -24,6 +24,8 @@ http::response<http::string_body> handle_request(const http::request<http::strin
         res.prepare_payload();
         return res;
     }
+
+    // <------------------ handling employees table ------------------>
     else if (req.method() == http::verb::get && req.target() == "/api/employees")
     {
         // get all employees
@@ -88,6 +90,65 @@ http::response<http::string_body> handle_request(const http::request<http::strin
         return res;
     }
 
+    // <------------------ handling tasks table ------------------>
+    else if (req.method() == http::verb::get && req.target() == "/api/tasks")
+    {
+        // get all tasks
+        nlohmann::json tasks = db.getAllTasks();
+        http::response<http::string_body> res{http::status::ok, req.version()};
+        res.set(http::field::content_type, "application/json");
+        res.body() = tasks.dump();
+        res.prepare_payload();
+        return res;
+    }
+    else if (req.method() == http::verb::get && req.target().starts_with("/api/tasks"))
+    {
+        // get task by id
+        size_t base_size = std::string("/api/tasks").length();
+        int id = std::stoi(std::string(req.target()).substr(base_size + 1));
+        nlohmann::json task = db.getTaskById(id);
+        http::response<http::string_body> res{task.empty() ? http::status::not_found : http::status::ok, req.version()};
+        res.set(http::field::content_type, "application/json");
+        res.body() = task.empty() ? "{\"error\": \"Task not found\"}" : task.dump();
+        res.prepare_payload();
+        return res;
+    }
+    else if (req.method() == http::verb::post && req.target() == "/api/tasks")
+    {
+        // create new task
+        nlohmann::json request_body = nlohmann::json::parse(req.body());
+        nlohmann::json new_task = db.createTask(request_body);
+        http::response<http::string_body> res{http::status::created, req.version()};
+        res.set(http::field::content_type, "application/json");
+        res.body() = new_task.dump();
+        res.prepare_payload();
+        return res;
+    }
+    else if (req.method() == http::verb::put && req.target().starts_with("/api/tasks"))
+    {
+        // update task by id
+        size_t base_size = std::string("/api/tasks").length();
+        int id = std::stoi(std::string(req.target()).substr(base_size + 1));
+        nlohmann::json request_body = nlohmann::json::parse(req.body());
+        nlohmann::json updated_task = db.updateTaskById(id, request_body);
+        http::response<http::string_body> res{updated_task.empty() ? http::status::not_found : http::status::ok, req.version()};
+        res.set(http::field::content_type, "application/json");
+        res.body() = updated_task.empty() ? "{\"error\": \"Task not found\"}" : updated_task.dump();
+        res.prepare_payload();
+        return res;
+    }
+    else if (req.method() == http::verb::delete_ && req.target().starts_with("/api/tasks/"))
+    {
+        // delete task by id (and child tasks if it is)
+        size_t base_size = std::string("/api/tasks").length();
+        int id = std::stoi(std::string(req.target()).substr(base_size + 1));
+        nlohmann::json deleted_task = db.deleteTaskById(id);
+        http::response<http::string_body> res{deleted_task.empty() ? http::status::not_found : http::status::ok, req.version()};
+        res.set(http::field::content_type, "application/json");
+        res.body() = deleted_task.empty() ? "{\"error\": \"Task not found\"}" : deleted_task.dump();
+        res.prepare_payload();
+        return res;
+    }
 
     // default response for unsupported methods
     return http::response<http::string_body>{http::status::bad_request, req.version()};
