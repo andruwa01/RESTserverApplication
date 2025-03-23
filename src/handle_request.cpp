@@ -24,47 +24,6 @@ http::response<http::string_body> handle_request(const http::request<http::strin
         res.prepare_payload();
         return res;
     }
-    else if (req.method() == http::verb::post && req.target() == "/api/data")
-    {
-        // Handle POST request
-        nlohmann::json json_request = nlohmann::json::parse(req.body());
-        auto json_response = json_request; 
-
-        http::response<http::string_body> res{http::status::ok, req.version()};
-        res.set(http::field::server, "Beast");
-        res.set(http::field::content_type, "application/json");
-        res.keep_alive(req.keep_alive());
-        res.body() = json_response.dump();
-        res.prepare_payload();
-        return res;
-    }
-    else if (req.method() == http::verb::put && req.target() == "/api/data")
-    {
-        // Handle PUT request
-        auto json_request = nlohmann::json::parse(req.body());
-        std::string response_message = "Updated: " + json_request.dump();
-        nlohmann::json json_response = {{"message", response_message}};
-
-        http::response<http::string_body> res{http::status::ok, req.version()};
-        res.set(http::field::server, "Beast");
-        res.set(http::field::content_type, "application/json");
-        res.keep_alive(req.keep_alive());
-        res.body() = json_response.dump();
-        res.prepare_payload();
-        return res;
-    }
-    else if (req.method() == http::verb::delete_ && req.target() == "/api/data")
-    {
-        // Handle DELETE request
-        nlohmann::json json_response = {{"message", "Resource deleted"}};
-        http::response<http::string_body> res{http::status::ok, req.version()};
-        res.set(http::field::server, "Beast");
-        res.set(http::field::content_type, "application/json");
-        res.keep_alive(req.keep_alive());
-        res.body() = json_response.dump();
-        res.prepare_payload();
-        return res;
-    }
     else if (req.method() == http::verb::get && req.target() == "/api/employees")
     {
         // get all employees
@@ -73,6 +32,19 @@ http::response<http::string_body> handle_request(const http::request<http::strin
         http::response<http::string_body> res{http::status::ok, req.version()};
         res.set(http::field::content_type, "application/json");
         res.body() = employees.dump();
+        res.prepare_payload();
+        return res;
+    }
+    else if (req.method() == http::verb::get && req.target().starts_with("/api/employees"))
+    {
+        // get employee by id
+        size_t base_size = std::string("/api/employees").length();
+        int id = std::stoi(std::string(req.target()).substr(base_size + 1));
+        nlohmann::json employee = db.getEmployeeById(id);
+
+        http::response<http::string_body> res{employee.empty() ? http::status::not_found : http::status::ok, req.version()};
+        res.set(http::field::content_type, "application/json");
+        res.body() = employee.empty() ? "{\"error\": \"Employee not found\"}" : employee.dump();
         res.prepare_payload();
         return res;
     }
@@ -88,23 +60,34 @@ http::response<http::string_body> handle_request(const http::request<http::strin
         res.prepare_payload();
         return res;
     }
-    else if (req.method() == http::verb::get && req.target().starts_with("/api/employees"))
+    else if (req.method() == http::verb::put && req.target().starts_with("/api/employees"))
     {
-        std::string target = std::string(req.target());
-        size_t last_slash = target.find_last_of('/');
-        if (last_slash != std::string::npos && last_slash + 1 < target.size())
-        {
-            // get employee by id
-            int id = std::stoi(target.substr(last_slash + 1));
-            nlohmann::json employee = db.getEmployeeById(id);
+        // update employee by id
+        size_t base_size = std::string("/api/employees").length();
+        int id = std::stoi(std::string(req.target()).substr(base_size + 1));
+        nlohmann::json request_body = nlohmann::json::parse(req.body());
+        nlohmann::json updated_employee = db.updateEmployeeById(id, request_body);
 
-            http::response<http::string_body> res{employee.empty() ? http::status::not_found : http::status::ok, req.version()};
-            res.set(http::field::content_type, "application/json");
-            res.body() = employee.empty() ? "{\"error\": \"Employee not found\"}" : employee.dump();
-            res.prepare_payload();
-            return res;
-        }
+        http::response<http::string_body> res{updated_employee.empty() ? http::status::not_found : http::status::ok, req.version()};
+        res.set(http::field::content_type, "application/json");
+        res.body() = updated_employee.empty() ? "{\"error\": \"Employee not found\"}" : updated_employee.dump();
+        res.prepare_payload();
+        return res;
     }
+    else if (req.method() == http::verb::delete_ && req.target().starts_with("/api/employees/"))
+    {
+        // delete employee by id
+        size_t base_size = std::string("/api/employees").length();
+        int id = std::stoi(std::string(req.target()).substr(base_size + 1));
+        nlohmann::json deleted_employee = db.deleteEmployeeById(id);
+
+        http::response<http::string_body> res{deleted_employee.empty() ? http::status::not_found : http::status::ok, req.version()};
+        res.set(http::field::content_type, "application/json");
+        res.body() = deleted_employee.empty() ? "{\"error\": \"Employee not found\"}" : deleted_employee.dump();
+        res.prepare_payload();
+        return res;
+    }
+
 
     // default response for unsupported methods
     return http::response<http::string_body>{http::status::bad_request, req.version()};

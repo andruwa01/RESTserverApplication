@@ -81,3 +81,40 @@ nlohmann::json DatabaseConnection::getEmployeeById(int id)
     txn.commit();
     return employee;
 }
+
+nlohmann::json DatabaseConnection::deleteEmployeeById(int id)
+{
+    pqxx::work txn(conn_);
+    pqxx::result res = txn.exec_params("DELETE FROM employees WHERE id = $1 RETURNING *", id);
+    nlohmann::json deleted_employee;
+    if (!res.empty()) {
+        deleted_employee = {
+            {"id", res[0]["id"].as<int>()},
+            {"full_name", res[0]["full_name"].as<std::string>()},
+            {"position", res[0]["position"].as<std::string>()}
+        };
+    }
+    txn.commit();
+    return deleted_employee;
+}
+
+nlohmann::json DatabaseConnection::updateEmployeeById(int id, const nlohmann::json& employee_data)
+{
+    pqxx::work txn(conn_);
+    pqxx::result res = txn.exec_params(
+        "UPDATE employees SET full_name = $1, position = $2 WHERE id = $3 RETURNING *", 
+        employee_data["full_name"].get<std::string>(), 
+        employee_data["position"].get<std::string>(), 
+        id
+    );
+    nlohmann::json updated_employee;
+    if (!res.empty()) {
+        updated_employee = {
+            {"id", res[0]["id"].as<int>()},
+            {"full_name", res[0]["full_name"].as<std::string>()},
+            {"position", res[0]["position"].as<std::string>()}
+        };
+    }
+    txn.commit();
+    return updated_employee;
+}

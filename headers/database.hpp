@@ -21,6 +21,8 @@ public:
     nlohmann::json getAllEmployees();
     nlohmann::json createEmployee(const nlohmann::json& employee_data);
     nlohmann::json getEmployeeById(int id);
+    nlohmann::json deleteEmployeeById(int id);
+    nlohmann::json updateEmployeeById(int id, const nlohmann::json& employee_data);
 
 private:
     pqxx::connection conn_;
