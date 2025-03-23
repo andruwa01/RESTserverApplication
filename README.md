@@ -23,3 +23,10 @@
     - `$ createdb -h localhost -U postgres -O user tasks_employees`
 5. load dump .sql to db.
     - `$ psql -h localhost -U user -d tasks_employees -f tasks_employees.sql`
+
+
+### Run the REST API server app
+
+1. `$ cmake --build ./build` - build the project.
+2. Prepare data base.
+3. `$ ./build/serverApp` - run the application.
