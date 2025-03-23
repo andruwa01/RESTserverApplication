@@ -1,17 +1,17 @@
 #include "database.hpp"
 
-Database::Database(const std::string& connection_string)
+DatabaseConnection::DatabaseConnection(const std::string& connection_string)
     : conn_(connection_string)
 {
     std::cout << "connected to db\n";
 }
 
-Database::~Database()
+DatabaseConnection::~DatabaseConnection()
 {
     std::cout << "disconnected from db\n";
 }
 
-void Database::testConnection()
+void DatabaseConnection::testConnection()
 {
     try
     {
@@ -26,7 +26,58 @@ void Database::testConnection()
     }
 }
 
-pqxx::connection& Database::getConnection()
+pqxx::connection& DatabaseConnection::getConnection()
 {
     return conn_;
+}
+
+nlohmann::json DatabaseConnection::getAllEmployees()
+{
+    pqxx::work txn(conn_);
+    pqxx::result res = txn.exec("SELECT * FROM employees");
+    nlohmann::json employees = nlohmann::json::array();
+    for (const auto& row : res) {
+        employees.push_back({
+            {"id", row["id"].as<int>()},
+            {"full_name", row["full_name"].as<std::string>()},
+            {"position", row["position"].as<std::string>()}
+        });
+    }
+    txn.commit();
+    return employees; 
+}
+
+nlohmann::json DatabaseConnection::createEmployee(const nlohmann::json& employee_data)
+{
+    pqxx::work txn(conn_);
+    pqxx::result res = txn.exec_params
+    (
+        "INSERT INTO employees (full_name, position) VALUES ($1, $2) RETURNING *",
+        employee_data["full_name"].get<std::string>(), employee_data["position"].get<std::string>()
+    );
+    nlohmann::json new_employee =
+    {
+        {"id", res[0]["id"].as<int>()},
+        {"full_name", res[0]["full_name"].as<std::string>()},
+        {"position", res[0]["position"].as<std::string>()}
+    };
+
+    txn.commit();
+    return new_employee;
+}
+
+nlohmann::json DatabaseConnection::getEmployeeById(int id)
+{
+    pqxx::work txn(conn_);
+    pqxx::result res = txn.exec_params("SELECT * FROM employees WHERE id = $1", id);
+    nlohmann::json employee;
+    if (!res.empty()) {
+        employee = {
+            {"id", res[0]["id"].as<int>()},
+            {"full_name", res[0]["full_name"].as<std::string>()},
+            {"position", res[0]["position"].as<std::string>()}
+        };
+    }
+    txn.commit();
+    return employee;
 }
