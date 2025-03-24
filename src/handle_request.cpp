@@ -131,7 +131,7 @@ http::response<http::string_body> handle_request(const http::request<http::strin
         int id = std::stoi(std::string(req.target()).substr(base_size + 1));
         nlohmann::json request_body = nlohmann::json::parse(req.body());
         nlohmann::json updated_task = db.updateTaskById(id, request_body);
-        http::response<http::string_body> res{updated_task.empty() ? http::status::not_found : http::status::ok, req.version()};
+        http::response<http::string_body> res{updated_task.contains("error") ? http::status::unprocessable_entity : http::status::ok, req.version()};
         res.set(http::field::content_type, "application/json");
         res.body() = updated_task.empty() ? "{\"error\": \"Task not found\"}" : updated_task.dump();
         res.prepare_payload();

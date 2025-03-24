@@ -181,7 +181,7 @@ nlohmann::json DatabaseConnection::createTask(const nlohmann::json& task_data)
         }
     }
 
-    /// checking assignee exists in db or not
+    // checking assignee exists in db or not
     if (assignee)
     {
         pqxx::result assignee_check = txn.exec_params("SELECT id FROM employees WHERE id = $1", assignee.value());
@@ -227,6 +227,28 @@ nlohmann::json DatabaseConnection::updateTaskById(int id, const nlohmann::json& 
     std::optional<int> assignee = (task_data.contains("assignee_id") && !task_data["assignee_id"].is_null())
                            ? std::make_optional(task_data["assignee_id"].get<int>())
                            : std::nullopt;
+
+    // checking parent_task exists in db or not
+    if (parent_task)
+    {
+        pqxx::result parent_check = txn.exec_params("SELECT id FROM tasks WHERE id = $1", parent_task.value());
+        if (parent_check.empty())
+        {
+            txn.abort();
+            return {{"error", "Parent task with given id does not exist"}};
+        }
+    }
+
+    // checking assignee exists in db or not
+    if (assignee)
+    {
+        pqxx::result assignee_check = txn.exec_params("SELECT id FROM employees WHERE id = $1", assignee.value());
+        if (assignee_check.empty())
+        {
+            txn.abort();
+            return {{"error", "Assignee with given id does not exist"}};
+        }
+    }
 
     pqxx::result res = txn.exec_params(
         "UPDATE tasks SET title = $1, description = $2, parent_task_id = $3, assignee_id = $4, due_date = $5, status = $6 "
