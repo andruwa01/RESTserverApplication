@@ -118,7 +118,7 @@ http::response<http::string_body> handle_request(const http::request<http::strin
         // create new task
         nlohmann::json request_body = nlohmann::json::parse(req.body());
         nlohmann::json new_task = db.createTask(request_body);
-        http::response<http::string_body> res{http::status::created, req.version()};
+        http::response<http::string_body> res{new_task.contains("error") ? http::status::unprocessable_entity : http::status::ok, req.version()};
         res.set(http::field::content_type, "application/json");
         res.body() = new_task.dump();
         res.prepare_payload();
