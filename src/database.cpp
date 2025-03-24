@@ -129,8 +129,8 @@ nlohmann::json DatabaseConnection::getAllTasks()
             {"id", row["id"].as<int>()},
             {"title", row["title"].as<std::string>()},
             {"description", row["description"].as<std::string>()},
-            {"parent_task_id", row["parent_task_id"].is_null() ? nullptr : row["parent_task_id"].as<int>()},
-            {"assignee_id", row["assignee_id"].is_null() ? nullptr : row["assignee_id"].as<int>()},
+            {"parent_task_id", res[0]["parent_task_id"].is_null() ? nlohmann::json(nullptr) : nlohmann::json(res[0]["parent_task_id"].as<int>())},
+            {"assignee_id", res[0]["assignee_id"].is_null()       ? nlohmann::json(nullptr) : nlohmann::json(res[0]["assignee_id"].as<int>())},
             {"due_date", row["due_date"].as<std::string>()},
             {"status", row["status"].as<std::string>()}
         });
@@ -149,8 +149,8 @@ nlohmann::json DatabaseConnection::getTaskById(int id)
             {"id", res[0]["id"].as<int>()},
             {"title", res[0]["title"].as<std::string>()},
             {"description", res[0]["description"].as<std::string>()},
-            {"parent_task_id", res[0]["parent_task_id"].is_null() ? nullptr : res[0]["parent_task_id"].as<int>()},
-            {"assignee_id", res[0]["assignee_id"].is_null() ? nullptr : res[0]["assignee_id"].as<int>()},
+            {"parent_task_id", res[0]["parent_task_id"].is_null() ? nlohmann::json(nullptr) : nlohmann::json(res[0]["parent_task_id"].as<int>())},
+            {"assignee_id", res[0]["assignee_id"].is_null()       ? nlohmann::json(nullptr) : nlohmann::json(res[0]["assignee_id"].as<int>())},
             {"due_date", res[0]["due_date"].as<std::string>()},
             {"status", res[0]["status"].as<std::string>()}
         };
@@ -163,13 +163,12 @@ nlohmann::json DatabaseConnection::createTask(const nlohmann::json& task_data)
 {
     pqxx::work txn(conn_);
 
-    // Обработка nullable полей: если поле отсутствует или равно null, передаём pqxx::null
-    auto parent_task = (task_data.contains("parent_task_id") && !task_data["parent_task_id"].is_null())
-                           ? task_data["parent_task_id"].get<int>()
-                           : pqxx::null;
-    auto assignee = (task_data.contains("assignee_id") && !task_data["assignee_id"].is_null())
-                           ? task_data["assignee_id"].get<int>()
-                           : pqxx::null;
+    std::optional<int> parent_task = (task_data.contains("parent_task_id") && !task_data["parent_task_id"].is_null())
+                           ? std::make_optional(task_data["parent_task_id"].get<int>())
+                           : std::nullopt;
+    std::optional<int> assignee = (task_data.contains("assignee_id") && !task_data["assignee_id"].is_null())
+                           ? std::make_optional(task_data["assignee_id"].get<int>())
+                           : std::nullopt;
 
     pqxx::result res = txn.exec_params(
         "INSERT INTO tasks (title, description, parent_task_id, assignee_id, due_date, status) "
@@ -186,8 +185,8 @@ nlohmann::json DatabaseConnection::createTask(const nlohmann::json& task_data)
         {"id", res[0]["id"].as<int>()},
         {"title", res[0]["title"].as<std::string>()},
         {"description", res[0]["description"].as<std::string>()},
-        {"parent_task_id", res[0]["parent_task_id"].is_null() ? nullptr : res[0]["parent_task_id"].as<int>()},
-        {"assignee_id", res[0]["assignee_id"].is_null() ? nullptr : res[0]["assignee_id"].as<int>()},
+        {"parent_task_id", res[0]["parent_task_id"].is_null() ? nlohmann::json(nullptr) : nlohmann::json(res[0]["parent_task_id"].as<int>())},
+        {"assignee_id", res[0]["assignee_id"].is_null()       ? nlohmann::json(nullptr) : nlohmann::json(res[0]["assignee_id"].as<int>())},
         {"due_date", res[0]["due_date"].as<std::string>()},
         {"status", res[0]["status"].as<std::string>()}
     };
@@ -201,10 +200,10 @@ nlohmann::json DatabaseConnection::updateTaskById(int id, const nlohmann::json& 
     pqxx::work txn(conn_);
 
     std::optional<int> parent_task = (task_data.contains("parent_task_id") && !task_data["parent_task_id"].is_null())
-                           ? std::optional<int>{task_data["parent_task_id"].get<int>()}
+                           ? std::make_optional(task_data["parent_task_id"].get<int>())
                            : std::nullopt;
     std::optional<int> assignee = (task_data.contains("assignee_id") && !task_data["assignee_id"].is_null())
-                           ? std::optional<int>{task_data["assignee_id"].get<int>()}
+                           ? std::make_optional(task_data["assignee_id"].get<int>())
                            : std::nullopt;
 
     pqxx::result res = txn.exec_params(
@@ -225,8 +224,8 @@ nlohmann::json DatabaseConnection::updateTaskById(int id, const nlohmann::json& 
             {"id", res[0]["id"].as<int>()},
             {"title", res[0]["title"].as<std::string>()},
             {"description", res[0]["description"].as<std::string>()},
-            {"parent_task_id", res[0]["parent_task_id"].is_null() ? std::nullopt : std::optional{res[0]["parent_task_id"].as<int>()}},
-            {"assignee_id", res[0]["assignee_id"].is_null() ? std::nullopt : std::optional{res[0]["assignee_id"].as<int>()}},
+            {"parent_task_id", res[0]["parent_task_id"].is_null() ? nlohmann::json(nullptr) : nlohmann::json(res[0]["parent_task_id"].as<int>())},
+            {"assignee_id", res[0]["assignee_id"].is_null()       ? nlohmann::json(nullptr) : nlohmann::json(res[0]["assignee_id"].as<int>())},
             {"due_date", res[0]["due_date"].as<std::string>()},
             {"status", res[0]["status"].as<std::string>()}
         };
@@ -245,8 +244,8 @@ nlohmann::json DatabaseConnection::deleteTaskById(int id)
             {"id", res[0]["id"].as<int>()},
             {"title", res[0]["title"].as<std::string>()},
             {"description", res[0]["description"].as<std::string>()},
-            {"parent_task_id", res[0]["parent_task_id"].is_null() ? std::nullopt : std::optional{res[0]["parent_task_id"].as<int>()}},
-            {"assignee_id", res[0]["assignee_id"].is_null() ? nullptr : res[0]["assignee_id"].as<int>()},
+            {"parent_task_id", res[0]["parent_task_id"].is_null() ? nlohmann::json(nullptr) : nlohmann::json(res[0]["parent_task_id"].as<int>())},
+            {"assignee_id", res[0]["assignee_id"].is_null()       ? nlohmann::json(nullptr) : nlohmann::json(res[0]["assignee_id"].as<int>())},
             {"due_date", res[0]["due_date"].as<std::string>()},
             {"status", res[0]["status"].as<std::string>()}
         };

@@ -76,7 +76,7 @@ http::response<http::string_body> handle_request(const http::request<http::strin
         res.prepare_payload();
         return res;
     }
-    else if (req.method() == http::verb::delete_ && req.target().starts_with("/api/employees/"))
+    else if (req.method() == http::verb::delete_ && req.target().starts_with("/api/employees"))
     {
         // delete employee by id
         size_t base_size = std::string("/api/employees").length();
