@@ -26,11 +26,6 @@ void DatabaseConnection::testConnection()
     }
 }
 
-pqxx::connection& DatabaseConnection::getConnection()
-{
-    return conn_;
-}
-
 nlohmann::json DatabaseConnection::getAllEmployees()
 {
     pqxx::work txn(conn_);

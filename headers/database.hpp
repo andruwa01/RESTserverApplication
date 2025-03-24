@@ -17,7 +17,6 @@ public:
     ~DatabaseConnection();
 
     void testConnection();
-    pqxx::connection& getConnection();
 
     nlohmann::json getAllEmployees();
     nlohmann::json createEmployee(const nlohmann::json& employee_data);
