@@ -170,6 +170,28 @@ nlohmann::json DatabaseConnection::createTask(const nlohmann::json& task_data)
                            ? std::make_optional(task_data["assignee_id"].get<int>())
                            : std::nullopt;
 
+    // checking parent_task exists in db or not
+    if (parent_task)
+    {
+        pqxx::result parent_check = txn.exec_params("SELECT id FROM tasks WHERE id = $1", parent_task.value());
+        if (parent_check.empty())
+        {
+            txn.abort();
+            return {{"error", "Parent task with given id does not exist"}};
+        }
+    }
+
+    /// checking assignee exists in db or not
+    if (assignee)
+    {
+        pqxx::result assignee_check = txn.exec_params("SELECT id FROM employees WHERE id = $1", assignee.value());
+        if (assignee_check.empty())
+        {
+            txn.abort();
+            return {{"error", "Assignee with given id does not exist"}};
+        }
+    }
+
     pqxx::result res = txn.exec_params(
         "INSERT INTO tasks (title, description, parent_task_id, assignee_id, due_date, status) "
         "VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
