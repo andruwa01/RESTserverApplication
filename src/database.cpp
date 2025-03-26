@@ -124,8 +124,8 @@ nlohmann::json DatabaseConnection::getAllTasks()
             {"id", row["id"].as<int>()},
             {"title", row["title"].as<std::string>()},
             {"description", row["description"].as<std::string>()},
-            {"parent_task_id", res[0]["parent_task_id"].is_null() ? nlohmann::json(nullptr) : nlohmann::json(res[0]["parent_task_id"].as<int>())},
-            {"assignee_id",    res[0]["assignee_id"].is_null()    ? nlohmann::json(nullptr) : nlohmann::json(res[0]["assignee_id"].as<int>())},
+            {"parent_task_id", row["parent_task_id"].is_null() ? nlohmann::json(nullptr) : nlohmann::json(row["parent_task_id"].as<int>())},
+            {"assignee_id",    row["assignee_id"].is_null()    ? nlohmann::json(nullptr) : nlohmann::json(row["assignee_id"].as<int>())},
             {"due_date", row["due_date"].as<std::string>()},
             {"status", row["status"].as<std::string>()}
         });
