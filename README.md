@@ -27,6 +27,10 @@
 
 ### Run the REST API server app
 
-1. `$ cmake --build ./build` - build the project.
-2. Prepare PostgreSQL, make it listening new connections.
-3. `$ ./build/serverApp` - run the application.
+1. Prepare PostgreSQL, make it listening new connections.
+2. Build and run the server app.
+	1. `$ mkdir Build` - create folder with cmake build files.
+	2. `$ cd build` - move to build dir. 
+	3. `$ cmake ..` - generate cmake files.
+	4. `$ cmake --build .` - compile project (could be warnings - DON'T WORRY).
+	5. `$ ./build/serverApp` - run the application executable.
