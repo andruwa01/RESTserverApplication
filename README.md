@@ -1,6 +1,6 @@
 ### Предварительные требования
 
-- postgresql (использовалась версия 17) (`sudo apt install postgresql-17`) (как добавить репозитории: https://www.postgresql.org/download/linux/ubuntu/)
+- postgresql (использовалась версия 17) (`sudo apt install postgresql-17`) (как добавить репозитории: https://www.postgresql.org/download/linux/ubuntu/ если не репозиторий для `$ apt install`).
 - cmake 3.22.1 (`$ sudo apt install cmake`)
 - Boost библиотека (c++) (`$ sudo apt install libboost-all-dev`)
 - nlohmann json библиотека (`$ sudo apt install nlohmann-json3-dev`)
@@ -12,16 +12,16 @@
 
 ### Создание базы данных в PostgreSQL
 
-==В БД В STATUS ПОЛЕ ПРИСУТСТВУЕТ in_progress, я в итоге решил его не использовать, поэтому не обращайте внимания==
+В БД В STATUS ПОЛЕ ПРИСУТСТВУЕТ in_progress, я в итоге решил его не использовать, поэтому не обращайте внимания.
 
 1. Проверка postgres:
     - проверьте наличие утилиты psql (`psql --version`) -> если отсутствует - установите postgresql с этой утилитой.
 2. Получение/изменение пароля пользователя `postgres` (чтобы зайти под ним):
     1. `$ sudo -u postgres psql`
-    2. `ALTER USER postgres WITH PASSWORD 'newpassword'`
-3. Создание новой роли для нашей базы данных от пользователя `postgres`:
+    2. `ALTER USER postgres WITH PASSWORD 'newpassword'` - меняем
+3. Создание новой роли `user` для нашей базы данных от пользователя `postgres`:
     - `CREATE ROLE "user" WITH LOGIN PASSWORD 'newpassword'`
-4. Создание базы данных с указанным пользователем `user` в качестве владельца:
+4. Создание базы данных от лица `postgres` с указанным пользователем `user` в качестве владельца и именем `tasks_employees`:
     - `$ createdb -h localhost -U postgres -O user tasks_employees`
 5. Загрузка дампа .sql в базу данных:
     - `$ psql -h localhost -U user -d tasks_employees -f tasks_employees.sql`
