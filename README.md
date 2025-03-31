@@ -1,36 +1,35 @@
-### Preinstalled
+### Предварительные требования
 
-- postgresql (i used 17 version) (`sudo apt install postgresql-17`) (how to add repositories: https://www.postgresql.org/download/linux/ubuntu/)
+- postgresql (использовалась версия 17) (`sudo apt install postgresql-17`) (как добавить репозитории: https://www.postgresql.org/download/linux/ubuntu/)
 - cmake 3.22.1 (`$ sudo apt install cmake`)
-- Boost library (c++) (`$ sudo apt install libboost-all-dev`)
-- nlohmann json library (`$ sudo apt install nlohmann-json3-dev`)
-- libpq (c-library for libpqxx and postrgesql) (`$ sudo apt install libpq-dev`)
+- Boost библиотека (c++) (`$ sudo apt install libboost-all-dev`)
+- nlohmann json библиотека (`$ sudo apt install nlohmann-json3-dev`)
+- libpq (c-библиотека для libpqxx и postgresql) (`$ sudo apt install libpq-dev`)
 - libpqxx:
-    - `$ git submodule update --init --recursive` -> it updates / add files to deps/libpqxx. This dir
-    will be used in cmake when you try to build with cmake.
-- pkg-config (cmake try to find it during the bulding process): `$ sudo apt install pkg-config`
+    - `$ git submodule update --init --recursive` -> обновляет/добавляет файлы в deps/libpqxx. Эта директория
+    будет использоваться в cmake при сборке проекта.
+- pkg-config (cmake ищет его во время процесса сборки): `$ sudo apt install pkg-config`
 
-### Create database in PostgreSQL
+### Создание базы данных в PostgreSQL
 
-1. checking postgres.
-    - check if psql tool exists (`psql --version`) -> else - install postgresql with this tool inside.
-2. get password of `postgres` user / or change it if you forget:
-    1. `$ sudo -u postgres psql`.
-    2. `ALTER USER postgres WITH PASSWORD 'newpassword'`.
-3. create new role for our database from user `postgres`
-    - `CREATE ROLE "user" WITH LOGIN PASSWORD 'newpassword'`  
-4. create database for user as owner.
+1. Проверка postgres:
+    - проверьте наличие утилиты psql (`psql --version`) -> если отсутствует - установите postgresql с этой утилитой.
+2. Получение/изменение пароля пользователя `postgres` (чтобы зайти под ним):
+    1. `$ sudo -u postgres psql`
+    2. `ALTER USER postgres WITH PASSWORD 'newpassword'`
+3. Создание новой роли для нашей базы данных от пользователя `postgres`:
+    - `CREATE ROLE "user" WITH LOGIN PASSWORD 'newpassword'`
+4. Создание базы данных с указанным пользователем `user` в качестве владельца:
     - `$ createdb -h localhost -U postgres -O user tasks_employees`
-5. load dump .sql to db.
+5. Загрузка дампа .sql в базу данных:
     - `$ psql -h localhost -U user -d tasks_employees -f tasks_employees.sql`
 
+### Запуск REST API сервера
 
-### Run the REST API server app
-
-1. Prepare PostgreSQL, make it listening new connections.
-2. Build and run the server app.
-	1. `$ mkdir Build` - create folder with cmake build files.
-	2. `$ cd build` - move to build dir. 
-	3. `$ cmake ..` - generate cmake files.
-	4. `$ cmake --build .` - compile project (could be warnings - DON'T WORRY).
-	5. `$ ./build/serverApp` - run the application executable.
+1. Подготовьте PostgreSQL, настройте прослушивание новых подключений.
+2. Сборка и запуск серверного приложения:
+    1. `$ mkdir Build` - создание папки с файлами сборки cmake.
+    2. `$ cd build` - переход в директорию сборки.
+    3. `$ cmake ..` - генерация файлов cmake.
+    4. `$ cmake --build .` - компиляция проекта (возможны предупреждения - НЕ БЕСПОКОЙТЕСЬ).
+    5. `$ ./build/serverApp` - запуск исполняемого файла приложения.
