@@ -4,8 +4,6 @@ set(CMAKE_CXX_STANDARD 17)
 
 include_directories(${CMAKE_SOURCE_DIR}/headers)
 
-set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/build)
-
 set(SOURCE_FILES
     src/server.cpp
     src/handle_request.cpp
