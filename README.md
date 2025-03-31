@@ -18,7 +18,7 @@
     - проверьте наличие утилиты psql (`psql --version`) -> если отсутствует - установите postgresql с этой утилитой.
 2. Получение/изменение пароля пользователя `postgres` (чтобы зайти под ним):
     1. `$ sudo -u postgres psql`
-    2. `ALTER USER postgres WITH PASSWORD 'newpassword'` - меняем
+    2. `ALTER USER postgres WITH PASSWORD 'newpassword'` - меняем пароль для `postgres`.
 3. Создание новой роли `user` для нашей базы данных от пользователя `postgres`:
     - `CREATE ROLE "user" WITH LOGIN PASSWORD 'newpassword'`
 4. Создание базы данных от лица `postgres` с указанным пользователем `user` в качестве владельца и именем `tasks_employees`:
