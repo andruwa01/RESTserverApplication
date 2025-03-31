@@ -4,13 +4,15 @@
 - cmake 3.22.1 (`$ sudo apt install cmake`)
 - Boost библиотека (c++) (`$ sudo apt install libboost-all-dev`)
 - nlohmann json библиотека (`$ sudo apt install nlohmann-json3-dev`)
-- libpq (c-библиотека для libpqxx и postgresql) (`$ sudo apt install libpq-dev`)
+- libpq (C-библиотека для libpqxx и postgresql) (`$ sudo apt install libpq-dev`)
 - libpqxx:
     - `$ git submodule update --init --recursive` -> обновляет/добавляет файлы в deps/libpqxx. Эта директория
     будет использоваться в cmake при сборке проекта.
 - pkg-config (cmake ищет его во время процесса сборки): `$ sudo apt install pkg-config`
 
 ### Создание базы данных в PostgreSQL
+
+==В БД В STATUS ПОЛЕ ПРИСУТСТВУЕТ in_progress, я в итоге решил его не использовать, поэтому не обращайте внимания==
 
 1. Проверка postgres:
     - проверьте наличие утилиты psql (`psql --version`) -> если отсутствует - установите postgresql с этой утилитой.
