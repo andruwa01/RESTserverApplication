@@ -2,3 +2,7 @@
 /build/
 # settings for vscode
 /.vscode/
+# md files for personal use
+*.md
+# we need this file with description
+!README.md
