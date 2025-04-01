@@ -1,6 +1,6 @@
 ### Предварительные требования
 
-- postgresql (использовалась версия 17) (`sudo apt install postgresql-17`) (как добавить репозитории: https://www.postgresql.org/download/linux/ubuntu/ если не репозиторий для `$ apt install`).
+- postgresql (использовалась версия 17) (`sudo apt install postgresql-17`) (как добавить репозитории: https://www.postgresql.org/download/linux/ubuntu/ если не виден репозиторий для `$ apt install`).
 - cmake 3.22.1 (`$ sudo apt install cmake`)
 - Boost библиотека (c++) (`$ sudo apt install libboost-all-dev`)
 - nlohmann json библиотека (`$ sudo apt install nlohmann-json3-dev`)
@@ -12,7 +12,7 @@
 
 ### Создание базы данных в PostgreSQL
 
-В БД В STATUS ПОЛЕ ПРИСУТСТВУЕТ in_progress, я в итоге решил его не использовать, поэтому не обращайте внимания.
+- В БД в поле задач есть вариант `in_progress`, я в итоге решил его не использовать, поэтому не обращайте внимания.
 
 1. Проверка postgres:
     - проверьте наличие утилиты psql (`psql --version`) -> если отсутствует - установите postgresql с этой утилитой.
